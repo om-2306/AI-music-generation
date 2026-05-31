@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AI MIDI Studio</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-mark">M</div>
+          <div>
+            <h1>AI MIDI Studio</h1>
+            <p id="projectPath">Loading project...</p>
+          </div>
+        </div>
+
+        <section class="status-panel" aria-label="Project status">
+          <div class="status-row">
+            <span>music21</span>
+            <strong id="music21Status">-</strong>
+          </div>
+          <div class="status-row">
+            <span>TensorFlow</span>
+            <strong id="tensorflowStatus">-</strong>
+          </div>
+          <div class="status-row">
+            <span>MIDI files</span>
+            <strong id="midiCount">0</strong>
+          </div>
+          <div class="status-row">
+            <span>Model</span>
+            <strong id="modelStatus">Not trained</strong>
+          </div>
+        </section>
+
+        <section class="upload-panel" aria-label="Upload MIDI">
+          <label class="file-picker">
+            <input id="midiInput" type="file" accept=".mid,.midi" multiple />
+            <span>Add MIDI</span>
+          </label>
+          <button id="refreshBtn" class="secondary-button" type="button">Refresh</button>
+        </section>
+      </aside>
+
+      <section class="workspace">
+        <div class="timeline" aria-label="Pipeline stages">
+          <div class="stage" data-stage="data">
+            <span class="stage-index">1</span>
+            <div>
+              <strong>Data</strong>
+              <small>Raw MIDI</small>
+            </div>
+          </div>
+          <div class="stage" data-stage="train">
+            <span class="stage-index">2</span>
+            <div>
+              <strong>Train</strong>
+              <small>LSTM</small>
+            </div>
+          </div>
+          <div class="stage" data-stage="generate">
+            <span class="stage-index">3</span>
+            <div>
+              <strong>Generate</strong>
+              <small>New tokens</small>
+            </div>
+          </div>
+          <div class="stage" data-stage="export">
+            <span class="stage-index">4</span>
+            <div>
+              <strong>Export</strong>
+              <small>MIDI file</small>
+            </div>
+          </div>
+        </div>
+
+        <section class="visual-panel" aria-label="MIDI activity">
+          <canvas id="pianoRoll" width="1200" height="240"></canvas>
+        </section>
+
+        <section class="control-grid" aria-label="Controls">
+          <form class="tool-panel" id="demoForm">
+            <div class="panel-header">
+              <h2>Dataset</h2>
+              <button type="submit">Create Demo MIDI</button>
+            </div>
+            <label>
+              <span>Demo files</span>
+              <input name="count" type="number" min="1" max="100" value="12" />
+            </label>
+          </form>
+
+          <form class="tool-panel" id="trainForm">
+            <div class="panel-header">
+              <h2>Training</h2>
+              <button type="submit">Train Model</button>
+            </div>
+            <div class="field-grid">
+              <label>
+                <span>Epochs</span>
+                <input name="epochs" type="number" min="1" max="500" value="3" />
+              </label>
+              <label>
+                <span>Batch</span>
+                <input name="batchSize" type="number" min="1" max="512" value="16" />
+              </label>
+              <label>
+                <span>Sequence</span>
+                <input name="sequenceLength" type="number" min="8" max="256" value="32" />
+              </label>
+            </div>
+          </form>
+
+          <form class="tool-panel" id="generateForm">
+            <div class="panel-header">
+              <h2>Generation</h2>
+              <button type="submit">Generate MIDI</button>
+            </div>
+            <div class="field-grid">
+              <label>
+                <span>Tokens</span>
+                <input name="notes" type="number" min="16" max="2000" value="200" />
+              </label>
+              <label>
+                <span>Temperature</span>
+                <input name="temperature" type="number" min="0.1" max="2" step="0.1" value="0.8" />
+              </label>
+            </div>
+          </form>
+        </section>
+
+        <section class="results-grid" aria-label="Files and execution">
+          <div class="file-panel">
+            <div class="panel-header compact">
+              <h2>Training MIDI</h2>
+            </div>
+            <ul id="rawFiles" class="file-list"></ul>
+          </div>
+
+          <div class="file-panel">
+            <div class="panel-header compact">
+              <h2>Generated MIDI</h2>
+            </div>
+            <ul id="generatedFiles" class="file-list"></ul>
+          </div>
+
+          <div class="log-panel">
+            <div class="panel-header compact">
+              <h2>Execution</h2>
+              <span id="jobBadge">Idle</span>
+            </div>
+            <pre id="logs">Ready.</pre>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
